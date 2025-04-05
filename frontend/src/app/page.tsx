@@ -1,15 +1,9 @@
-import Image from "next/image";
-import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar'
-import { AppSidebar } from '@/components/app-sidebar'
+import { CardDemo } from '@/components/login-form'
 
-export default function Home({ children }: { children: React.ReactNode }) {
-  return (
-    <SidebarProvider>
-        <AppSidebar />
-        <main>
-            <SidebarTrigger />
-            {children}
-        </main>
-    </SidebarProvider>
-  );
+export default function Login() {
+    return (
+        <div className="min-h-screen flex items-center justify-center bg-gray-100">
+            <CardDemo />
+        </div>
+    );
 }
