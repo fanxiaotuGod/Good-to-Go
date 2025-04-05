@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import { useRouter } from "next/navigation"
 import { z } from "zod"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -28,6 +29,7 @@ const registerSchema = loginSchema.extend({
 
 export function LoginForm() {
   const [isRegistering, setIsRegistering] = useState(false)
+  const router = useRouter()
 
   const form = useForm<z.infer<typeof loginSchema | typeof registerSchema>>({
     resolver: zodResolver(isRegistering ? registerSchema : loginSchema),
@@ -70,8 +72,8 @@ export function LoginForm() {
         setIsRegistering(false)
       } else {
         alert("Login successful!")
-        // Redirect or store result.volunteer as needed
         console.log("Logged in as:", result.volunteer)
+        router.push("/home") // takes to home
       }
     } catch (err) {
       console.error("Error submitting form:", err)
