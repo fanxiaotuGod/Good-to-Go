@@ -38,17 +38,46 @@ export function LoginForm() {
     },
   })
 
-  function onSubmit(data: any) {
-    if (isRegistering) {
-      console.log("Registering user:", data)
-      // Send to /api/register
-    } else {
-      console.log("Logging in user:", data)
-      // Send to /api/login
-    }
-  }
-
+  async function onSubmit(data: any) {
+    const endpoint = isRegistering
+      ? "http://localhost:5000/api/signup"
+      : "http://localhost:5000/api/login"
   
+    // Only send what the backend expects: email and password
+    const payload = {
+      email: data.email,
+      password: data.password,
+    }
+  
+    try {
+      const response = await fetch(endpoint, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      })
+  
+      const result = await response.json()
+  
+      if (!response.ok || result.success === false) {
+        alert(result.message || "Something went wrong")
+        return
+      }
+  
+      if (isRegistering) {
+        alert("Registration successful! You can now log in.")
+        setIsRegistering(false)
+      } else {
+        alert("Login successful!")
+        // Redirect or store result.volunteer as needed
+        console.log("Logged in as:", result.volunteer)
+      }
+    } catch (err) {
+      console.error("Error submitting form:", err)
+      alert("Network error. Try again later.")
+    }
+  }  
 
   return (
     <div className="w-full max-w-md space-y-6">
