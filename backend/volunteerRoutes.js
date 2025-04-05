@@ -4,31 +4,25 @@ const router = express.Router();
 const connection = require('./db'); // Your MySQL connection module
 
 // Login API
+// Example for login (do similar for signup)
 router.post('/login', (req, res) => {
     const { email, password } = req.body;
-
-    // Query the volunteer table by email
     connection.query(
         'SELECT * FROM volunteer WHERE email = ?',
         [email],
         (err, results) => {
             if (err) {
                 console.error('Error during login query:', err);
-                return res.status(500).json({ success: false, message: 'Database error' });
+                // For debugging only—do not expose error details in production
+                return res.status(500).json({ success: false, message: 'Database error', error: err.message });
             }
-
             if (results.length === 0) {
-                // No volunteer with that email found
                 return res.json({ success: false, message: 'Volunteer not found' });
             }
-
             const volunteer = results[0];
-            // Check if password matches (in production, compare hashed values)
             if (volunteer.password !== password) {
                 return res.json({ success: false, message: 'Incorrect password' });
             }
-
-            // Successful login
             return res.json({ success: true, volunteer });
         }
     );
@@ -45,7 +39,7 @@ router.post('/signup', (req, res) => {
         (err, results) => {
             if (err) {
                 console.error('Error during signup query:', err);
-                return res.status(500).json({ success: false, message: 'Database error' });
+                return res.status(500).json({ success: false, message: 'Database error' , error: err.message});
             }
 
             if (results.length > 0) {
@@ -60,7 +54,7 @@ router.post('/signup', (req, res) => {
                 (err, result) => {
                     if (err) {
                         console.error('Error inserting volunteer:', err);
-                        return res.status(500).json({ success: false, message: 'Database error' });
+                        return res.status(500).json({ success: false, message: 'Database error' , error: err.message});
                     }
 
                     // Volunteer created successfully
