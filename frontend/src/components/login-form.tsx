@@ -7,24 +7,20 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-import { InputForm } from "@/components/input-form" // or wherever InputForm is
+import { LoginForm } from "@/components/input-form" // or wherever InputForm is
 
 type CardProps = React.ComponentProps<typeof Card>
 
-export function LoginForm({ className, ...props }: CardProps) {
+export function CardDemo({ className, ...props }: CardProps) {
   return (
     <Card className={cn("w-full max-w-md mx-auto", className)} {...props}>
-      <CardHeader>
-        <CardTitle>Login</CardTitle>
-        <CardDescription>Enter your username and password to continue</CardDescription>
-      </CardHeader>
 
       <CardContent>
-        <InputForm />
+        <LoginForm />
       </CardContent>
 
       <CardFooter className="text-sm text-muted-foreground justify-center">
-        Good to Go!
+        for youCode 2025
       </CardFooter>
     </Card>
   )
