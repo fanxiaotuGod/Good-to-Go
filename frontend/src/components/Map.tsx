@@ -23,8 +23,10 @@ interface Donor {
 }
 
 interface Props {
+  donors: Donor[]
   volunteerLocation: google.maps.LatLngLiteral | null
   radius: number | null
+  vehicleSize: "small" | "medium" | "large"
   selectedDonor: Donor | null
   acceptedDonor: Donor | null
   onSelectDonor: (donor: Donor) => void
@@ -45,8 +47,10 @@ function isWithinRadius(
 }
 
 const Map = ({
+               donors,
                volunteerLocation,
                radius,
+               vehicleSize,
                selectedDonor,
                acceptedDonor,
                onSelectDonor,
@@ -56,26 +60,12 @@ const Map = ({
     libraries: ["geometry"],
   })
 
-  const [donors, setDonors] = useState<Donor[]>([])
   const [directions, setDirections] = useState<google.maps.DirectionsResult | null>(null)
 
   const mapRef = useRef<google.maps.Map | null>(null)
   const circleRef = useRef<google.maps.Circle | null>(null)
 
-  const dropoffLocation = { lat: 49.268400, lng: -123.097955 }
-
-  useEffect(() => {
-    async function fetchDonors() {
-      try {
-        const res = await fetch("http://localhost:5001/api/donor")
-        const data: Donor[] = await res.json()
-        setDonors(data)
-      } catch (error) {
-        console.error("Error fetching donors:", error)
-      }
-    }
-    fetchDonors()
-  }, [])
+  const dropoffLocation = { lat: 49.2684, lng: -123.097955 }
 
   useEffect(() => {
     if (mapRef.current && volunteerLocation && radius) {
@@ -100,7 +90,6 @@ const Map = ({
     if (!donor || !volunteerLocation) return
 
     const directionsService = new google.maps.DirectionsService()
-
     directionsService.route(
         {
           origin: volunteerLocation,
@@ -124,7 +113,6 @@ const Map = ({
     )
   }, [volunteerLocation, acceptedDonor, selectedDonor])
 
-  // Clear route if delivery is canceled
   useEffect(() => {
     if (!acceptedDonor && !selectedDonor) {
       setDirections(null)

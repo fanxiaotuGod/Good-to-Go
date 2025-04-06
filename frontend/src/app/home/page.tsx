@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/app-sidebar";
 import { VolunteerForm } from "@/components/volunteer-form";
@@ -26,12 +26,33 @@ export default function Home() {
   const [deliveryInProgress, setDeliveryInProgress] = useState(false);
   const [volunteerLocation, setVolunteerLocation] = useState<google.maps.LatLngLiteral | null>(null);
   const [radius, setRadius] = useState<number | null>(null);
+  const [vehicleSize, setVehicleSize] = useState<"small" | "medium" | "large">("medium");
   const [selectedDonor, setSelectedDonor] = useState<Donor | null>(null);
   const [acceptedDonor, setAcceptedDonor] = useState<Donor | null>(null);
+  const [donors, setDonors] = useState<Donor[]>([]);
 
-  const handleVolunteerSubmit = (loc: google.maps.LatLngLiteral, rad: number) => {
+  const fetchDonors = async () => {
+    try {
+      const res = await fetch("http://localhost:5001/api/donor");
+      const data = await res.json();
+      setDonors(data);
+    } catch (err) {
+      console.error("Failed to fetch donors", err);
+    }
+  };
+
+  useEffect(() => {
+    fetchDonors();
+  }, []);
+
+  const handleVolunteerSubmit = (
+      loc: google.maps.LatLngLiteral,
+      rad: number,
+      size: "small" | "medium" | "large"
+  ) => {
     setVolunteerLocation(loc);
     setRadius(rad);
+    setVehicleSize(size);
   };
 
   const handleAcceptPickup = (donor: Donor) => {
@@ -46,8 +67,27 @@ export default function Home() {
     setDeliveryInProgress(false);
   };
 
-  const handleCompleteDelivery = () => {
-    alert("Delivery completed!");
+  const handleCompleteDelivery = async () => {
+    if (!acceptedDonor) return;
+
+    try {
+      const res = await fetch(`http://localhost:5001/api/donor/${acceptedDonor.id}`, {
+        method: "DELETE",
+      });
+
+      if (!res.ok) {
+        const data = await res.json();
+        alert("Failed to delete donor: " + data.message);
+        return;
+      }
+
+      alert("Delivery completed and donor deleted!");
+      fetchDonors();
+    } catch (error) {
+      console.error("Error deleting donor:", error);
+      alert("Failed to delete donor.");
+    }
+
     setAcceptedDonor(null);
     setDeliveryInProgress(false);
   };
@@ -61,6 +101,7 @@ export default function Home() {
         <div className="flex flex-1 overflow-hidden">
           <SidebarProvider>
             <AppSidebar
+                donors={donors}
                 onSelectDonor={setSelectedDonor}
                 onAcceptPickup={handleAcceptPickup}
                 volunteerLocation={volunteerLocation}
@@ -68,8 +109,10 @@ export default function Home() {
             />
             <main className="flex-1 overflow-hidden">
               <Map
+                  donors={donors}
                   volunteerLocation={volunteerLocation}
                   radius={radius}
+                  vehicleSize={vehicleSize}
                   selectedDonor={selectedDonor}
                   acceptedDonor={acceptedDonor}
                   onSelectDonor={setSelectedDonor}
