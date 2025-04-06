@@ -174,4 +174,26 @@ router.get('/donor', (req, res) => {
     });
 });
 
+// DELETE donor and related food items
+router.delete('/donor/:id', (req, res) => {
+    const donorId = req.params.id;
+
+    const sql = `DELETE FROM donor_info WHERE id = ?`;
+
+    connection.query(sql, [donorId], (err, result) => {
+        if (err) {
+            console.error('Error deleting donor:', err);
+            return res.status(500).json({ success: false, message: 'Database error', error: err.message });
+        }
+
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ success: false, message: 'Donor not found' });
+        }
+
+        return res.json({ success: true, message: 'Donor and related food items deleted successfully' });
+    });
+});
+
+
+
 module.exports = router;
