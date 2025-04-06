@@ -1,3 +1,10 @@
+"use client"
+
+import { useState } from "react"
+import { z } from "zod"
+import { useForm } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
+
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
@@ -8,39 +15,119 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Slider } from "@/components/ui/slider"
+
+const VolunteerSchema = z.object({
+  vehicleSize: z.enum(["small", "medium", "large"]),
+  radius: z.number().min(1, "Radius must be at least 1 km"),
+})
 
 export function VolunteerForm() {
+  const form = useForm<z.infer<typeof VolunteerSchema>>({
+    resolver: zodResolver(VolunteerSchema),
+    defaultValues: {
+      vehicleSize: "medium",
+      radius: 1,
+    },
+  })
+
+  const [open, setOpen] = useState(false)
+
+  async function onSubmit(data: z.infer<typeof VolunteerSchema>) {
+    try {
+      const res = await fetch("http://localhost:5000/api/volunteer", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      })
+
+      const result = await res.json()
+      if (!res.ok || result.success === false) {
+        alert(result.message || "Failed to submit volunteer info")
+      } else {
+        alert("Thanks for signing up!")
+        setOpen(false)
+        form.reset()
+      }
+    } catch (err) {
+      console.error("Submission error:", err)
+      alert("Something went wrong. Try again later.")
+    }
+  }
+
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="outline">View Locations</Button>
+        <Button variant="outline">Rescue Food Now!</Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Edit profile</DialogTitle>
+          <DialogTitle>Find Nearby Food</DialogTitle>
           <DialogDescription>
-            Make changes to your profile here. Click save when you're done.
+            Submit your vehicle size, delivery radius, and current location.
           </DialogDescription>
         </DialogHeader>
-        <div className="grid gap-4 py-4">
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="name" className="text-right">
-              Name
-            </Label>
-            <Input id="name" value="Pedro Duarte" className="col-span-3" />
-          </div>
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="username" className="text-right">
-              Username
-            </Label>
-            <Input id="username" value="@peduarte" className="col-span-3" />
-          </div>
-        </div>
-        <DialogFooter>
-          <Button type="submit">Save changes</Button>
-        </DialogFooter>
+
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 py-4">
+            <FormField
+              control={form.control}
+              name="vehicleSize"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Vehicle Size</FormLabel>
+                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select size" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectItem value="small">Small</SelectItem>
+                      <SelectItem value="medium">Medium</SelectItem>
+                      <SelectItem value="large">Large</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="radius"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Delivery Radius: {field.value} km</FormLabel>
+                  <FormControl>
+                    <Slider
+                      defaultValue={[field.value]}
+                      min={1}
+                      max={50}
+                      step={1}
+                      onValueChange={(val) => field.onChange(val[0])}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <DialogFooter>
+              <Button type="submit">Submit</Button>
+            </DialogFooter>
+          </form>
+        </Form>
       </DialogContent>
     </Dialog>
   )
