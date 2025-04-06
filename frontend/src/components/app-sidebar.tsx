@@ -70,7 +70,6 @@ export function AppSidebar({ onAcceptPickup }: { onAcceptPickup: () => void }) {
       try {
         const res = await fetch("http://localhost:5000/api/donors")
         const rawDonors: Donor[] = await res.json()
-
         const source = rawDonors?.length > 0 ? rawDonors : sampleDonors
 
         const enriched = await Promise.all(
@@ -80,7 +79,14 @@ export function AppSidebar({ onAcceptPickup }: { onAcceptPickup: () => void }) {
           })
         )
 
-        setDonors(enriched)
+        // Sort by earliest expiry
+        const sorted = enriched.sort((a, b) => {
+          const aMin = Math.min(...a.items.map(item => item.days_before_expiration ?? Infinity))
+          const bMin = Math.min(...b.items.map(item => item.days_before_expiration ?? Infinity))
+          return aMin - bMin
+        })
+
+        setDonors(sorted)
       } catch (err) {
         console.error("Error fetching donors, using sample data:", err)
 
@@ -91,7 +97,13 @@ export function AppSidebar({ onAcceptPickup }: { onAcceptPickup: () => void }) {
           })
         )
 
-        setDonors(enrichedSample)
+        const sortedSample = enrichedSample.sort((a, b) => {
+          const aMin = Math.min(...a.items.map(item => item.days_before_expiration ?? Infinity))
+          const bMin = Math.min(...b.items.map(item => item.days_before_expiration ?? Infinity))
+          return aMin - bMin
+        })
+
+        setDonors(sortedSample)
       }
     }
 
@@ -108,32 +120,34 @@ export function AppSidebar({ onAcceptPickup }: { onAcceptPickup: () => void }) {
           </SidebarGroupLabel>
           <ul className="space-y-3">
             {donors.map((donor) => (
-                <DonorPopover key={donor.id} onAccept={onAcceptPickup}>
-                    <li className="p-2 rounded-md bg-muted hover:bg-muted/80 cursor-pointer transition">
-                        <p className="font-semibold">{donor.name}</p>
-                        <p className="text-xs text-muted-foreground">
-                        {donor.address || "Loading address..."}
-                        </p>
-                        <ul className="mt-2 text-sm space-y-1">
-                        {donor.items.length > 0 ? (
-                            donor.items.map((item, index) => (
-                            <li key={index}>
-                                {item.product_name}: {item.product_amount} kg{" "}
-                                {item.days_before_expiration != null && (
-                                <span className="text-xs text-muted-foreground">
-                                    ({item.days_before_expiration} days left)
-                                </span>
-                                )}
-                            </li>
-                            ))
-                        ) : (
-                            <li className="italic text-muted-foreground text-xs">No food items</li>
-                        )}
-                        </ul>
-                    </li>
-                </DonorPopover>
+              <DonorPopover key={donor.id} onAccept={onAcceptPickup}>
+                <li className="p-2 rounded-md bg-muted hover:bg-muted/80 cursor-pointer transition">
+                  <p className="font-semibold">{donor.name}</p>
+                  <p className="text-xs text-muted-foreground">
+                    {donor.address || "Loading address..."}
+                  </p>
+                  <ul className="mt-2 text-sm space-y-1">
+                    {donor.items.length > 0 ? (
+                      donor.items.map((item, index) => (
+                        <li key={index}>
+                          {item.product_name}: {item.product_amount} kg{" "}
+                          {item.days_before_expiration != null && (
+                            <span className="text-xs text-muted-foreground">
+                              ({item.days_before_expiration} days left)
+                            </span>
+                          )}
+                        </li>
+                      ))
+                    ) : (
+                      <li className="italic text-muted-foreground text-xs">
+                        No food items
+                      </li>
+                    )}
+                  </ul>
+                </li>
+              </DonorPopover>
             ))}
-            </ul>
+          </ul>
         </SidebarGroup>
       </SidebarContent>
       <SidebarFooter />

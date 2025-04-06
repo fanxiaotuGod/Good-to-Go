@@ -41,7 +41,7 @@ export default function Home() {
         </SidebarProvider>
       </div>
 
-      <div className="fixed bottom-4 left-10 shadow-lg z-40">
+      <div className="fixed bottom-4 left-70 shadow-lg z-40">
         <VolunteerForm />
       </div>
 
