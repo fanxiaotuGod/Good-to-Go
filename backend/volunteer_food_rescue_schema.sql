@@ -51,37 +51,37 @@ CREATE TABLE assignments (
 );
 
 
-INSERT INTO donor_info (id, name, latitude, longitude) VALUES (1, 'Fresh Harvest Market', 49.279957, -123.032515);
-INSERT INTO donor_info (id, name, latitude, longitude) VALUES (2, 'Urban Roots', 49.300966, -123.162134);
-INSERT INTO donor_info (id, name, latitude, longitude) VALUES (3, 'Greenleaf Grocers', 49.218285, -123.139237);
-INSERT INTO donor_info (id, name, latitude, longitude) VALUES (4, 'True North Organics', 49.262286, -123.146174);
-INSERT INTO donor_info (id, name, latitude, longitude) VALUES (5, 'West Coast Co-op', 49.254956, -123.116461);
-INSERT INTO donor_info (id, name, latitude, longitude) VALUES (6, 'Sunrise Supermart', 49.268535, -123.184622);
-INSERT INTO donor_info (id, name, latitude, longitude) VALUES (7, 'Maple Market', 49.232676, -123.167788);
-INSERT INTO donor_info (id, name, latitude, longitude) VALUES (8, 'Local Basket', 49.286471, -123.091422);
-INSERT INTO donor_info (id, name, latitude, longitude) VALUES (9, 'Pacific Provisions', 49.303051, -123.104311);
-INSERT INTO donor_info (id, name, latitude, longitude) VALUES (10, 'Natures Fare', 49.247312, -123.078248);
-INSERT INTO donor_info (id, name, latitude, longitude) VALUES (11, 'Community Foods', 49.246887, -123.081408);
-INSERT INTO donor_info (id, name, latitude, longitude) VALUES (12, 'Green Planet Market', 49.23788, -123.162624);
-INSERT INTO donor_info (id, name, latitude, longitude) VALUES (13, 'Good to Go Foods', 49.24143, -123.101356);
-INSERT INTO donor_info (id, name, latitude, longitude) VALUES (14, 'Healthy Haven', 49.213826, -123.197585);
-INSERT INTO donor_info (id, name, latitude, longitude) VALUES (15, 'Eco Grocers', 49.305521, -123.17881);
-INSERT INTO donor_info (id, name, latitude, longitude) VALUES (16, 'Valley Fresh', 49.215867, -123.173954);
-INSERT INTO donor_info (id, name, latitude, longitude) VALUES (17, 'Harvest Hub', 49.236079, -123.186368);
-INSERT INTO donor_info (id, name, latitude, longitude) VALUES (18, 'Oceanview Organics', 49.258545, -123.202486);
-INSERT INTO donor_info (id, name, latitude, longitude) VALUES (19, 'Granville Greens', 49.28532, -123.202267);
-INSERT INTO donor_info (id, name, latitude, longitude) VALUES (20, 'Sunset Market', 49.284611, -123.113349);
-INSERT INTO donor_info (id, name, latitude, longitude) VALUES (21, 'Hometown Produce', 49.264717, -123.220012);
-INSERT INTO donor_info (id, name, latitude, longitude) VALUES (22, 'Farm to Family', 49.214543, -123.082911);
-INSERT INTO donor_info (id, name, latitude, longitude) VALUES (23, 'Raincity Market', 49.243177, -123.079541);
-INSERT INTO donor_info (id, name, latitude, longitude) VALUES (24, 'Whole Basket', 49.245091, -123.089388);
-INSERT INTO donor_info (id, name, latitude, longitude) VALUES (25, 'Fraser Foods', 49.303408, -123.112358);
-INSERT INTO donor_info (id, name, latitude, longitude) VALUES (26, 'EcoChoice Market', 49.307314, -123.043703);
-INSERT INTO donor_info (id, name, latitude, longitude) VALUES (27, 'Urban Farms Collective', 49.296997, -123.132931);
-INSERT INTO donor_info (id, name, latitude, longitude) VALUES (28, 'North Shore Naturals', 49.239318, -123.141112);
-INSERT INTO donor_info (id, name, latitude, longitude) VALUES (29, 'Daily Fresh', 49.198881, -123.134923);
-INSERT INTO donor_info (id, name, latitude, longitude) VALUES (30, 'City Market', 49.253336, -123.127008);
-INSERT INTO donor_info (id, name, latitude, longitude) VALUES (31, 'Peak Produce', 49.27221, -123.098343);
+INSERT INTO donor_info (id, name, latitude, longitude) VALUES (1, 'UBC Bookstore', 49.2652851856704, -123.25045920530934);
+INSERT INTO donor_info (id, name, latitude, longitude) VALUES (2, 'Kinton Ramen UBC', 49.266174327986434, -123.24860311674384);
+INSERT INTO donor_info (id, name, latitude, longitude) VALUES (3, 'Kokoro Tokyo Mazesoba - UBC', 49.266555624011545, -123.24122608245861);
+INSERT INTO donor_info (id, name, latitude, longitude) VALUES (4, 'Save-On-Foods', 49.2551111018911, -123.23547452415141);
+INSERT INTO donor_info (id, name, latitude, longitude) VALUES (5, 'UBC Farm', 49.25082116352407, -123.23926581377992);
+INSERT INTO donor_info (id, name, latitude, longitude) VALUES (6, 'COBS Bread', 49.23444411841751, -123.1580440179719);
+INSERT INTO donor_info (id, name, latitude, longitude) VALUES (7, 'Strongs Market', 49.24999473298377, -123.17855123004641);
+INSERT INTO donor_info (id, name, latitude, longitude) VALUES (8, 'Choices Market', 49.25884617753108, -123.17082646838641);
+INSERT INTO donor_info (id, name, latitude, longitude) VALUES (9, 'Loblaws City Market Arbutus', 49.259182277055174, -123.14473394011266);
+INSERT INTO donor_info (id, name, latitude, longitude) VALUES (10, 'IGA', 49.27027227732976, -123.17940953689752);
+INSERT INTO donor_info (id, name, latitude, longitude) VALUES (11, 'Simons NOFRILLS Vancouver', 49.26915218844862, -123.19554570569841);
+INSERT INTO donor_info (id, name, latitude, longitude) VALUES (12, 'Safeway King Edward Mall', 49.250442945539966, -123.1188130732091);
+INSERT INTO donor_info (id, name, latitude, longitude) VALUES (13, 'Nesters Market', 49.2449520613268, -123.10061696796559);
+INSERT INTO donor_info (id, name, latitude, longitude) VALUES (14, 'Whole Foods Market', 49.26904017816183, -123.14696553792554);
+INSERT INTO donor_info (id, name, latitude, longitude) VALUES (15, 'Fresh St Market Vancouver House', 49.276880284101736, -123.14044240585712);
+INSERT INTO donor_info (id, name, latitude, longitude) VALUES (16, 'Subway', 49.25972779608241, -123.16447504492496);
+INSERT INTO donor_info (id, name, latitude, longitude) VALUES (17, 'Freshii', 49.254910204105215, -123.22644479957515);
+INSERT INTO donor_info (id, name, latitude, longitude) VALUES (18, 'Walmart Supercentre', 49.18082842300297, -123.10856902874724);
+INSERT INTO donor_info (id, name, latitude, longitude) VALUES (19, 'FreshCo No 2 & Blundell', 49.15613594405797, -123.1494244348601);
+INSERT INTO donor_info (id, name, latitude, longitude) VALUES (20, 'Acme Grocery Store', 49.194740575675546, -123.07698333662638);
+INSERT INTO donor_info (id, name, latitude, longitude) VALUES (21, 'Real Canadian Superstore Marine Drive', 49.21178884587428, -123.07732665936683);
+INSERT INTO donor_info (id, name, latitude, longitude) VALUES (22, 'Millers Your Independent Grocer Vancouver', 49.22255314625553, -123.02720153926195);
+INSERT INTO donor_info (id, name, latitude, longitude) VALUES (23, 'Polo Market', 49.22905544173232, -123.10307586490015);
+INSERT INTO donor_info (id, name, latitude, longitude) VALUES (24, 'Buy-Low Foods', 49.23286673436853, -123.09140289172504);
+INSERT INTO donor_info (id, name, latitude, longitude) VALUES (25, 'Osaka Supermarket', 49.19070196659415, -123.14564788471522);
+INSERT INTO donor_info (id, name, latitude, longitude) VALUES (26, 'Safeway Seafair', 49.152318734567174, -123.18375670727563);
+INSERT INTO donor_info (id, name, latitude, longitude) VALUES (27, 'Foody World', 49.19228530121833, -123.12906233565977);
+INSERT INTO donor_info (id, name, latitude, longitude) VALUES (28, 'No. 9 Restaurant', 49.17602100273758, -123.14049508261998);
+INSERT INTO donor_info (id, name, latitude, longitude) VALUES (29, 'The Boss Restaurant', 49.222093443724575, -123.0058833147471);
+INSERT INTO donor_info (id, name, latitude, longitude) VALUES (30, 'Famous Foods', 49.251220978279875, -123.05507729169256);
+INSERT INTO donor_info (id, name, latitude, longitude) VALUES (31, 'Fat Boy Kitchen', 49.221810527771446, -123.05164733179807);
 
 
 

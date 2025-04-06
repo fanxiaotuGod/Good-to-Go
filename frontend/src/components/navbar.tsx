@@ -32,42 +32,54 @@ const components: { title: string; href: string }[] = [
 ]
 
 export function NavigationMenuDemo() {
-  return (
-    <NavigationMenu className="ml-4 h-11">
-      <NavigationMenuList>
-        <NavigationMenuItem>
-          <NavigationMenuTrigger>User</NavigationMenuTrigger>
-          <NavigationMenuContent>
-            <ul className="grid w-[80px] md:w-[80px] lg:w-[80px] ">
-              {components.map((component) => (
-                <ListItem
-                  key={component.title}
-                  title={component.title}
-                  href={component.href}
-                >
-                </ListItem>
-              ))}
-            </ul>
-          </NavigationMenuContent>
-        </NavigationMenuItem>
-        <NavigationMenuItem>
-          <Link href="/home" legacyBehavior passHref>
-            <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-              Home
-            </NavigationMenuLink>
-          </Link>
-        </NavigationMenuItem>
-        <NavigationMenuItem>
-          <Link href="/about" legacyBehavior passHref>
-            <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-              About good2go!
-            </NavigationMenuLink>
-          </Link>
-        </NavigationMenuItem>
-      </NavigationMenuList>
-    </NavigationMenu>
-  )
-}
+    return (
+      <div className="w-full flex items-center justify-between h-11 px-4">
+        {/* Left-aligned menu */}
+        <NavigationMenu>
+          <NavigationMenuList>
+            <NavigationMenuItem>
+              <NavigationMenuTrigger>User</NavigationMenuTrigger>
+              <NavigationMenuContent>
+                <ul className="grid w-[80px]">
+                  {components.map((component) => (
+                    <ListItem
+                      key={component.title}
+                      title={component.title}
+                      href={component.href}
+                    />
+                  ))}
+                </ul>
+              </NavigationMenuContent>
+            </NavigationMenuItem>
+            <NavigationMenuItem>
+              <Link href="/about" legacyBehavior passHref>
+                <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                  About us
+                </NavigationMenuLink>
+              </Link>
+            </NavigationMenuItem>
+          </NavigationMenuList>
+        </NavigationMenu>
+  
+        {/* Centered Home */}
+        <NavigationMenu>
+          <NavigationMenuList>
+            <NavigationMenuItem>
+              <Link href="/home" legacyBehavior passHref>
+                <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                  good2go
+                </NavigationMenuLink>
+              </Link>
+            </NavigationMenuItem>
+          </NavigationMenuList>
+        </NavigationMenu>
+  
+        {/* Right spacer (optional) */}
+        <div className="w-[160px]" /> {/* Adjust width if needed */}
+      </div>
+    )
+  }
+  
 
 const ListItem = React.forwardRef<
   React.ElementRef<"a">,
