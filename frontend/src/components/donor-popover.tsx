@@ -1,18 +1,17 @@
-"use client";
+"use client"
 
 import {
   Popover,
   PopoverTrigger,
   PopoverContent,
-} from "@/components/ui/popover";
-import { Button } from "@/components/ui/button";
+} from "@/components/ui/popover"
+import { Button } from "@/components/ui/button"
 
 interface DonorPopoverProps {
-  children: React.ReactNode;
-  onAcceptPickup: () => void;
+  children: React.ReactNode
 }
 
-export default function DonorPopover({ children, onAcceptPickup }: DonorPopoverProps) {
+export default function DonorPopover({ children }: DonorPopoverProps) {
   return (
     <Popover>
       <PopoverTrigger asChild>{children}</PopoverTrigger>
@@ -21,10 +20,10 @@ export default function DonorPopover({ children, onAcceptPickup }: DonorPopoverP
         <p className="text-sm text-muted-foreground mb-3">
           You can proceed to coordinate a pickup or get directions from your location.
         </p>
-        <Button size="sm" variant="default" className="w-full" onClick={onAcceptPickup}>
+        <Button size="sm" variant="default" className="w-full">
           Accept Pickup
         </Button>
       </PopoverContent>
     </Popover>
-  );
+  )
 }
