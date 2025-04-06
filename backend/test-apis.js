@@ -1,8 +1,9 @@
 // test-apis.js
 const axios = require('axios');
 
-const BASE_URL = 'http://localhost:8000/api';
+const BASE_URL = 'http://localhost:5001/api';
 
+// Test: Normal Signup
 // Test: Normal Signup
 async function testSignup() {
     try {
@@ -12,9 +13,11 @@ async function testSignup() {
         });
         console.log('Signup Response:', response.data);
     } catch (error) {
-        console.error('Signup Error:', error.response ? error.response.data : error.message);
+        // Log the entire error object for debugging
+        console.error('Signup Error:', error);
     }
 }
+
 
 // Test: Signup with an email that already exists
 async function testSignupEmailAlreadyExist() {
@@ -68,17 +71,39 @@ async function testLoginPasswordWrong() {
     }
 }
 
-async function testDonor() {
+// Test: Delete test volunteer
+async function testDeleteVolunteer() {
     try {
-        const response = await axios.post(`${BASE_URL}/donor`, {
-            name: 'LeBron James',
-            latitude: '111111',
-            longitude: '222222'
-
-        });
-        console.log('Donor Response:', response.data);
+        const response = await axios.delete(`${BASE_URL}/volunteer/testuser@example.com`);
+        console.log('Delete Volunteer Response:', response.data);
     } catch (error) {
-        console.error('Donor Error:', error.response ? error.response.data : error.message);
+        console.error('Delete Volunteer Error:', error.response ? error.response.data : error.message);
+    }
+}
+
+// Test: Insert or update volunteer availability
+async function testVolunteerAvailabilityUpsert() {
+    try {
+        const response = await axios.post(`${BASE_URL}/volunteer/availability`, {
+            email: 'testuser@example.com',
+            password: 'password123',
+            vehicle_size: 'medium',
+            delivery_radius_km: 10,
+            available_date: '2025-04-07'
+        });
+        console.log('Volunteer Availability Upsert Response:', response.data);
+    } catch (error) {
+        console.error('Volunteer Availability Upsert Error:', error.response?.data || error.message);
+    }
+}
+
+// Test: Fetch volunteer info by email
+async function testGetVolunteerByEmail() {
+    try {
+        const response = await axios.get(`${BASE_URL}/volunteer/testuser@example.com`);
+        console.log('Get Volunteer Response:', response.data);
+    } catch (error) {
+        console.error('Get Volunteer Error:', error.response?.data || error.message);
     }
 }
 
@@ -99,9 +124,15 @@ async function runTests() {
     console.log('\n--- Testing Login with Wrong Password ---');
     await testLoginPasswordWrong();
 
-    console.log('\n--- Testing Donor');
-    await testDonor();
-}
+    console.log('\n--- Deleting Test Volunteer ---');
+    await testDeleteVolunteer();
 
+    // console.log('\n--- Testing Volunteer Availability Insert/Update ---');
+    // await testVolunteerAvailabilityUpsert();
+    //
+    // console.log('\n--- Testing Get Volunteer by Email ---');
+    // await testGetVolunteerByEmail();
+
+}
 
 runTests();
