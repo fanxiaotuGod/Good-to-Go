@@ -60,7 +60,7 @@ export function NavigationMenuDemo() {
         <NavigationMenuItem>
           <Link href="/about" legacyBehavior passHref>
             <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-              About Good to Go!
+              About good2go!
             </NavigationMenuLink>
           </Link>
         </NavigationMenuItem>
