@@ -48,7 +48,7 @@ const sampleDonors: Donor[] = [
   },
 ]
 
-export function AppSidebar() {
+export function AppSidebar({ onAcceptPickup }: { onAcceptPickup: () => void }) {
   const [donors, setDonors] = useState<Donor[]>([])
 
   async function getAddressFromCoords(lat: number, lng: number): Promise<string> {
@@ -108,7 +108,7 @@ export function AppSidebar() {
           </SidebarGroupLabel>
           <ul className="space-y-3">
             {donors.map((donor) => (
-                <DonorPopover key={donor.id}>
+                <DonorPopover key={donor.id} onAccept={onAcceptPickup}>
                     <li className="p-2 rounded-md bg-muted hover:bg-muted/80 cursor-pointer transition">
                         <p className="font-semibold">{donor.name}</p>
                         <p className="text-xs text-muted-foreground">
