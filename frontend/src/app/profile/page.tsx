@@ -27,7 +27,7 @@ export default function ProfilePage() {
                 Total Deliveries: 8
               </blockquote>
               <blockquote className="p-3 bg-white rounded-lg shadow-sm text-gray-700">
-                Total Distance Travelled (km): 5
+                Total Distance Travelled (km): 52
               </blockquote>
             </div>
 
