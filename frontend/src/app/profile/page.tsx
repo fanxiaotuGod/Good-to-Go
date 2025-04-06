@@ -24,7 +24,7 @@ export default function ProfilePage() {
             <div className="w-full">
               <h2 className="text-xl font-semibold mb-2">Statistics</h2>
               <blockquote className="p-3 bg-white rounded-lg shadow-sm mb-2 text-gray-700">
-                Total Deliveries: 5
+                Total Deliveries: 8
               </blockquote>
               <blockquote className="p-3 bg-white rounded-lg shadow-sm text-gray-700">
                 Total Distance Travelled (km): 5
