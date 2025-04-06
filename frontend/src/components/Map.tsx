@@ -1,99 +1,169 @@
-"use client";
+"use client"
 
-import React, { useState, useEffect } from "react";
-import { GoogleMap, useJsApiLoader, Marker, InfoWindow, MarkerProps } from "@react-google-maps/api";
-import { Donor } from "@/app/home/page"; // Adjust as needed
+import React, { useEffect, useRef, useState } from "react"
+import {
+  GoogleMap,
+  useJsApiLoader,
+  Marker,
+  DirectionsRenderer,
+} from "@react-google-maps/api"
 
-interface MapProps {
-  donors: Donor[];
-  highlightedDonorId: number | null;
-  onMarkerClick: (donorId: number | null) => void;
-  onMarkerHover: (donorId: number | null) => void;
+interface FoodItem {
+  product_name: string
+  product_amount: number
+  days_before_expiration: number
 }
 
-// An inline SVG for a blue circle marker
-const BLUE_CIRCLE_SVG = encodeURIComponent(`
-  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24">
-    <circle cx="12" cy="12" r="8" fill="blue" />
-  </svg>
-`);
+interface Donor {
+  id: number
+  name: string
+  latitude: number
+  longitude: number
+  items: FoodItem[]
+}
 
-const defaultCenter = { lat: 49.2827, lng: -123.1207 };
+interface Props {
+  volunteerLocation: google.maps.LatLngLiteral | null
+  radius: number | null
+  selectedDonor: Donor | null
+  acceptedDonor: Donor | null
+  onSelectDonor: (donor: Donor) => void
+}
 
-const Map: React.FC<MapProps> = ({ donors, highlightedDonorId, onMarkerClick, onMarkerHover }) => {
+function isWithinRadius(
+    origin: google.maps.LatLngLiteral,
+    target: google.maps.LatLngLiteral,
+    radiusKm: number
+): boolean {
+  const originLatLng = new google.maps.LatLng(origin.lat, origin.lng)
+  const targetLatLng = new google.maps.LatLng(target.lat, target.lng)
+  const distance = google.maps.geometry.spherical.computeDistanceBetween(
+      originLatLng,
+      targetLatLng
+  )
+  return distance <= radiusKm * 1000
+}
+
+const Map = ({
+               volunteerLocation,
+               radius,
+               selectedDonor,
+               acceptedDonor,
+               onSelectDonor,
+             }: Props) => {
   const { isLoaded } = useJsApiLoader({
     googleMapsApiKey: "AIzaSyDsK_Pqk2itHXUiHQ39qcFxpFzD-Cf7HeA",
-  });
+    libraries: ["geometry"],
+  })
 
-  const [volunteerPosition, setVolunteerPosition] = useState<{ lat: number; lng: number } | null>(null);
+  const [donors, setDonors] = useState<Donor[]>([])
+  const [directions, setDirections] = useState<google.maps.DirectionsResult | null>(null)
 
-  // Watch for volunteer's position
+  const mapRef = useRef<google.maps.Map | null>(null)
+  const circleRef = useRef<google.maps.Circle | null>(null)
+
+  const dropoffLocation = { lat: 49.268400, lng: -123.097955 }
+
   useEffect(() => {
-    if ("geolocation" in navigator) {
-      const watchId = navigator.geolocation.watchPosition(
-        (pos) => {
-          setVolunteerPosition({
-            lat: pos.coords.latitude,
-            lng: pos.coords.longitude,
-          });
-        },
-        (err) => console.error("Geolocation error:", err),
-        { enableHighAccuracy: true, maximumAge: 10000, timeout: 5000 }
-      );
-      return () => navigator.geolocation.clearWatch(watchId);
+    async function fetchDonors() {
+      try {
+        const res = await fetch("http://localhost:5001/api/donor")
+        const data: Donor[] = await res.json()
+        setDonors(data)
+      } catch (error) {
+        console.error("Error fetching donors:", error)
+      }
     }
-  }, []);
+    fetchDonors()
+  }, [])
 
-  if (!isLoaded) return <div>Loading map...</div>;
+  useEffect(() => {
+    if (mapRef.current && volunteerLocation && radius) {
+      if (circleRef.current) {
+        circleRef.current.setMap(null)
+      }
+      const circle = new google.maps.Circle({
+        center: volunteerLocation,
+        radius: radius * 1000,
+        fillColor: "#3b82f6",
+        fillOpacity: 0.15,
+        strokeColor: "#3b82f6",
+        strokeWeight: 2,
+        map: mapRef.current,
+      })
+      circleRef.current = circle
+    }
+  }, [volunteerLocation, radius])
 
-  const mapCenter = volunteerPosition || defaultCenter;
+  useEffect(() => {
+    const donor = acceptedDonor || selectedDonor
+    if (!donor || !volunteerLocation) return
+
+    const directionsService = new google.maps.DirectionsService()
+
+    directionsService.route(
+        {
+          origin: volunteerLocation,
+          destination: dropoffLocation,
+          waypoints: [
+            {
+              location: new google.maps.LatLng(donor.latitude, donor.longitude),
+              stopover: true,
+            },
+          ],
+          travelMode: google.maps.TravelMode.DRIVING,
+        },
+        (result, status) => {
+          if (status === "OK" && result) {
+            setDirections(result)
+          } else {
+            console.error("Multi-stop route failed:", status)
+            setDirections(null)
+          }
+        }
+    )
+  }, [volunteerLocation, acceptedDonor, selectedDonor])
+
+  // Clear route if delivery is canceled
+  useEffect(() => {
+    if (!acceptedDonor && !selectedDonor) {
+      setDirections(null)
+    }
+  }, [acceptedDonor, selectedDonor])
+
+  if (!isLoaded) return <div>Loading map...</div>
 
   return (
-    <div className="w-full h-full">
       <GoogleMap
-        mapContainerClassName="w-full h-full"
-        center={mapCenter}
-        zoom={12}
+          mapContainerClassName="w-full h-full"
+          center={volunteerLocation || { lat: 49.2827, lng: -123.1207 }}
+          zoom={12}
+          onLoad={(map) => {
+            mapRef.current = map
+          }}
       >
-        {/* Volunteer’s Location as a Blue Circle Marker */}
-        {volunteerPosition && (
-          <Marker
-            position={volunteerPosition}
-            title="Your Location"
-            // Custom SVG icon for a small blue circle
-            icon={{
-              url: `data:image/svg+xml,${BLUE_CIRCLE_SVG}`,
-              scaledSize: new google.maps.Size(24, 24),
-              anchor: new google.maps.Point(12, 12), // center the icon
-            }}
-          />
-        )}
+        {donors
+            .filter((donor) =>
+                volunteerLocation && radius
+                    ? isWithinRadius(
+                        volunteerLocation,
+                        { lat: donor.latitude, lng: donor.longitude },
+                        radius
+                    )
+                    : true
+            )
+            .map((donor) => (
+                <Marker
+                    key={donor.id}
+                    position={{ lat: donor.latitude, lng: donor.longitude }}
+                    title={donor.name}
+                    onClick={() => onSelectDonor(donor)}
+                />
+            ))}
 
-        {/* Donor Markers */}
-        {donors.map((donor) => (
-          <Marker
-            key={donor.id}
-            position={{ lat: donor.latitude, lng: donor.longitude }}
-            title={donor.name}
-            onClick={() => onMarkerClick(donor.id)}
-            onMouseOver={() => onMarkerHover(donor.id)}
-            onMouseOut={() => onMarkerHover(null)}
-            icon={
-              highlightedDonorId === donor.id
-                ? "http://maps.google.com/mapfiles/ms/icons/green-dot.png"
-                : undefined
-            }
-          >
-            {highlightedDonorId === donor.id && (
-              <InfoWindow onCloseClick={() => onMarkerHover(null)}>
-                <div>{donor.name}</div>
-              </InfoWindow>
-            )}
-          </Marker>
-        ))}
+        {directions && <DirectionsRenderer directions={directions} />}
       </GoogleMap>
-    </div>
-  );
-};
+  )
+}
 
-export default Map;
+export default Map
