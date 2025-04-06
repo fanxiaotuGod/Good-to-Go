@@ -14,39 +14,40 @@ import {
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu"
 
-const components: { title: string; href: string; description: string }[] = [
+const components: { title: string; href: string }[] = [
+  {
+    title: "Profile",
+    href: "",
+  },
   {
     title: "Logout",
     href: "/",
-    description:
-      "A modal dialog that interrupts the user with important content and expects a response.",
   }
 ]
 
 export function NavigationMenuDemo() {
   return (
-    <NavigationMenu>
+    <NavigationMenu className="ml-4">
       <NavigationMenuList>
         <NavigationMenuItem>
           <NavigationMenuTrigger>User</NavigationMenuTrigger>
           <NavigationMenuContent>
-            <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] ">
+            <ul className="grid w-[80px] md:w-[80px] lg:w-[80px] ">
               {components.map((component) => (
                 <ListItem
                   key={component.title}
                   title={component.title}
                   href={component.href}
                 >
-                  {component.description}
                 </ListItem>
               ))}
             </ul>
           </NavigationMenuContent>
         </NavigationMenuItem>
         <NavigationMenuItem>
-          <Link href="/" legacyBehavior passHref>
+          <Link href="/home" legacyBehavior passHref>
             <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-              Logout
+              Home
             </NavigationMenuLink>
           </Link>
         </NavigationMenuItem>
