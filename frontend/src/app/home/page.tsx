@@ -9,6 +9,7 @@ import Map from "@/components/Map"; // import your map component
 
 export default function Home() {
   return (
+<<<<<<< HEAD
     <div className="flex flex-col max-h-screen relative">
       {/* Navbar at top */}
       <header className="sticky top-0 z-50 bg-white shadow">
@@ -30,5 +31,14 @@ export default function Home() {
         <VolunteerForm />
       </div>
     </div>
+=======
+    <SidebarProvider>
+      <AppSidebar />
+      <main>
+        <SidebarTrigger />
+        <VolunteerForm /> 
+      </main>
+    </SidebarProvider>
+>>>>>>> 1531568 (api-addition)
   );
 }

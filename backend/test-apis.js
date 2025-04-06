@@ -1,7 +1,7 @@
 // test-apis.js
 const axios = require('axios');
 
-const BASE_URL = 'http://localhost:3000/api';
+const BASE_URL = 'http://localhost:8000/api';
 
 // Test: Normal Signup
 async function testSignup() {
@@ -68,6 +68,21 @@ async function testLoginPasswordWrong() {
     }
 }
 
+async function testDonor() {
+    try {
+        const response = await axios.post(`${BASE_URL}/donor`, {
+            name: 'LeBron James',
+            latitude: '111111',
+            longitude: '222222'
+
+        });
+        console.log('Donor Response:', response.data);
+    } catch (error) {
+        console.error('Donor Error:', error.response ? error.response.data : error.message);
+    }
+}
+
+
 async function runTests() {
     console.log('--- Testing Signup ---');
     await testSignup();
@@ -83,6 +98,9 @@ async function runTests() {
 
     console.log('\n--- Testing Login with Wrong Password ---');
     await testLoginPasswordWrong();
+
+    console.log('\n--- Testing Donor');
+    await testDonor();
 }
 
 
