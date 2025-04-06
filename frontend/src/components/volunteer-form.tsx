@@ -1,13 +1,9 @@
-<<<<<<< HEAD
 "use client"
 
 import { useState } from "react"
 import { z } from "zod"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
-=======
-/* eslint-disable @typescript-eslint/no-unused-vars, @typescript-eslint/no-explicit-any, react/no-unescaped-entities */
->>>>>>> 1531568 (api-addition)
 
 import { Button } from "@/components/ui/button"
 import {
