@@ -68,7 +68,7 @@ export function AppSidebar({ onAcceptPickup }: { onAcceptPickup: () => void }) {
   useEffect(() => {
     const fetchDonors = async () => {
       try {
-        const res = await fetch("http://localhost:5000/api/donors")
+        const res = await fetch("http://localhost:5001/api/donor")
         const rawDonors: Donor[] = await res.json()
         const source = rawDonors?.length > 0 ? rawDonors : sampleDonors
 

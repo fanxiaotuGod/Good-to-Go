@@ -4,7 +4,6 @@ const router = express.Router();
 const connection = require('./db'); // Your MySQL connection module
 
 // Login API
-// Example for login (do similar for signup)
 router.post('/login', (req, res) => {
     const { email, password } = req.body;
     connection.query(
@@ -39,7 +38,7 @@ router.post('/signup', (req, res) => {
         (err, results) => {
             if (err) {
                 console.error('Error during signup query:', err);
-                return res.status(500).json({ success: false, message: 'Database error' , error: err.message});
+                return res.status(500).json({ success: false, message: 'Database error', error: err.message });
             }
 
             if (results.length > 0) {
@@ -54,7 +53,7 @@ router.post('/signup', (req, res) => {
                 (err, result) => {
                     if (err) {
                         console.error('Error inserting volunteer:', err);
-                        return res.status(500).json({ success: false, message: 'Database error' , error: err.message});
+                        return res.status(500).json({ success: false, message: 'Database error', error: err.message });
                     }
 
                     // Volunteer created successfully
@@ -130,5 +129,49 @@ router.post('/assignment', (req, res) => {
     });
 });
 
+// GET donors along with their food items
+router.get('/donor', (req, res) => {
+    const sql = `
+        SELECT d.id AS donorId, d.name, d.latitude, d.longitude,
+               f.id AS foodItemId, f.product_name, f.product_amount, f.days_before_expiration
+        FROM donor_info d
+        LEFT JOIN food_items f ON d.id = f.donor_id
+    `;
+
+    connection.query(sql, (err, results) => {
+        console.log("GET /donors route hit");
+        if (err) {
+            console.error('Error fetching donors:', err);
+            return res.status(500).json({ success: false, message: 'Database error', error: err.message });
+        }
+
+        // Group donors and their items
+        const donorsMap = {};
+        for (const row of results) {
+            if (!donorsMap[row.donorId]) {
+                donorsMap[row.donorId] = {
+                    id: row.donorId,
+                    name: row.name,
+                    latitude: row.latitude,
+                    longitude: row.longitude,
+                    items: []
+                };
+            }
+
+            // If there is a matching food item row, add it to the donor's items array
+            if (row.foodItemId) {
+                donorsMap[row.donorId].items.push({
+                    product_name: row.product_name,
+                    product_amount: row.product_amount,
+                    days_before_expiration: row.days_before_expiration
+                });
+            }
+        }
+
+        // Convert the donors object into an array
+        const donorsArray = Object.values(donorsMap);
+        return res.json(donorsArray);
+    });
+});
 
 module.exports = router;
