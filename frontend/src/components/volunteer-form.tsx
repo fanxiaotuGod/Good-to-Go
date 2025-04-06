@@ -74,7 +74,7 @@ export function VolunteerForm() {
         <DialogHeader>
           <DialogTitle>Find Nearby Food</DialogTitle>
           <DialogDescription>
-            Submit your vehicle size, delivery radius, and current location.
+            Submit your vehicle size and delivery radius.
           </DialogDescription>
         </DialogHeader>
 
