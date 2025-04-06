@@ -1,53 +1,25 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
-import { GoogleMap, useJsApiLoader, Marker } from "@react-google-maps/api";
+import React from "react";
+import { GoogleMap, useJsApiLoader, Marker, InfoWindow } from "@react-google-maps/api";
+import { Donor } from "@/app/home/page"; // or wherever your Donor interface is
 
-// Define TypeScript interfaces for your donor and food item data
-interface FoodItem {
-  product_name: string;
-  product_amount: number;
-  days_before_expiration: number;
+interface MapProps {
+  donors: Donor[];
+  highlightedDonorId: number | null;
+  onMarkerClick: (donorId: number | null) => void;
+  onMarkerHover: (donorId: number | null) => void; // <-- new prop
 }
 
-interface Donor {
-  id: number;
-  name: string;
-  latitude: number;
-  longitude: number;
-  items: FoodItem[];
-}
-
-// Center of the map 
 const center = {
   lat: 49.2827,
   lng: -123.1207,
 };
 
-const Map = () => {
+const Map: React.FC<MapProps> = ({ donors, highlightedDonorId, onMarkerClick, onMarkerHover }) => {
   const { isLoaded } = useJsApiLoader({
     googleMapsApiKey: "AIzaSyDsK_Pqk2itHXUiHQ39qcFxpFzD-Cf7HeA",
   });
-
-  // State to store donors fetched from the API
-  const [donors, setDonors] = useState<Donor[]>([]);
-
-  // Fetch donors from your API when the component mounts
-  useEffect(() => {
-    async function fetchDonors() {
-      try {
-        const response = await fetch("http://localhost:5001/api/donor");
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        const data: Donor[] = await response.json();
-        setDonors(data);
-      } catch (error) {
-        console.error("Error fetching donors:", error);
-      }
-    }
-    fetchDonors();
-  }, []);
 
   if (!isLoaded) return <div>Loading map...</div>;
 
@@ -59,7 +31,22 @@ const Map = () => {
             key={donor.id}
             position={{ lat: donor.latitude, lng: donor.longitude }}
             title={donor.name}
-          />
+            onClick={() => onMarkerClick(donor.id)}
+            // Add mouseover/mouseout to highlight
+            onMouseOver={() => onMarkerHover(donor.id)}
+            onMouseOut={() => onMarkerHover(null)}
+            icon={
+              highlightedDonorId === donor.id
+                ? "http://maps.google.com/mapfiles/ms/icons/green-dot.png"
+                : undefined
+            }
+          >
+            {highlightedDonorId === donor.id && (
+              <InfoWindow onCloseClick={() => onMarkerHover(null)}>
+                <div>{donor.name}</div>
+              </InfoWindow>
+            )}
+          </Marker>
         ))}
       </GoogleMap>
     </div>

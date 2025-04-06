@@ -1,6 +1,6 @@
-"use client"
+"use client";
 
-import { useEffect, useState } from "react"
+import { useEffect } from "react";
 import {
   Sidebar,
   SidebarContent,
@@ -8,107 +8,46 @@ import {
   SidebarGroup,
   SidebarGroupLabel,
   SidebarHeader,
-} from "@/components/ui/sidebar"
-import DonorPopover from "@/components/donor-popover"
+} from "@/components/ui/sidebar";
+import DonorPopover from "@/components/donor-popover";
 
-interface FoodItem {
-  product_name: string
-  product_amount: number
-  days_before_expiration: number
+export interface FoodItem {
+  product_name: string;
+  product_amount: number;
+  days_before_expiration: number;
 }
 
-interface Donor {
-  id: number
-  name: string
-  latitude: number
-  longitude: number
-  items: FoodItem[]
-  address?: string
+export interface Donor {
+  id: number;
+  name: string;
+  latitude: number;
+  longitude: number;
+  items: FoodItem[];
+  address?: string;
 }
 
-const sampleDonors: Donor[] = [
-  {
-    id: 0,
-    name: "UBC Bookstore",
-    latitude: 49.26525718092775,
-    longitude: -123.25039483229551,
-    items: [
-      { product_name: "Bananas", product_amount: 10, days_before_expiration: 4 },
-      { product_name: "Bread Loaves", product_amount: 5, days_before_expiration: 12 },
-    ],
-  },
-  {
-    id: 1,
-    name: "L & G Bubble Tea",
-    latitude: 49.232555466773775,
-    longitude: -123.09363025093255,
-    items: [
-      { product_name: "Taro", product_amount: 12, days_before_expiration: 1 },
-    ],
-  },
-]
+interface AppSidebarProps {
+  donors: Donor[];
+  highlightedDonorId: number | null;
+  onHoverDonor: (donorId: number | null) => void;
+  onAcceptPickup: () => void;
+}
 
-export function AppSidebar({ onAcceptPickup }: { onAcceptPickup: () => void }) {
-  const [donors, setDonors] = useState<Donor[]>([])
-
-  async function getAddressFromCoords(lat: number, lng: number): Promise<string> {
-    const apiKey = "AIzaSyDsK_Pqk2itHXUiHQ39qcFxpFzD-Cf7HeA"
-    const url = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=${apiKey}`
-
-    try {
-      const response = await fetch(url)
-      const data = await response.json()
-      return data.results?.[0]?.formatted_address || "Address not found"
-    } catch (error) {
-      console.error("Reverse geocoding error:", error)
-      return "Address fetch error"
-    }
-  }
-
+export function AppSidebar({
+  donors,
+  highlightedDonorId,
+  onHoverDonor,
+  onAcceptPickup,
+}: AppSidebarProps) {
+  // Whenever the highlighted donor changes, scroll its element into view.
   useEffect(() => {
-    const fetchDonors = async () => {
-      try {
-        const res = await fetch("http://localhost:5001/api/donor")
-        const rawDonors: Donor[] = await res.json()
-        const source = rawDonors?.length > 0 ? rawDonors : sampleDonors
-
-        const enriched = await Promise.all(
-          source.map(async (donor) => {
-            const address = await getAddressFromCoords(donor.latitude, donor.longitude)
-            return { ...donor, address }
-          })
-        )
-
-        // Sort by earliest expiry
-        const sorted = enriched.sort((a, b) => {
-          const aMin = Math.min(...a.items.map(item => item.days_before_expiration ?? Infinity))
-          const bMin = Math.min(...b.items.map(item => item.days_before_expiration ?? Infinity))
-          return aMin - bMin
-        })
-
-        setDonors(sorted)
-      } catch (err) {
-        console.error("Error fetching donors, using sample data:", err)
-
-        const enrichedSample = await Promise.all(
-          sampleDonors.map(async (donor) => {
-            const address = await getAddressFromCoords(donor.latitude, donor.longitude)
-            return { ...donor, address }
-          })
-        )
-
-        const sortedSample = enrichedSample.sort((a, b) => {
-          const aMin = Math.min(...a.items.map(item => item.days_before_expiration ?? Infinity))
-          const bMin = Math.min(...b.items.map(item => item.days_before_expiration ?? Infinity))
-          return aMin - bMin
-        })
-
-        setDonors(sortedSample)
+    if (highlightedDonorId !== null) {
+      const element = document.getElementById(`donor-${highlightedDonorId}`);
+      if (element) {
+        element.scrollIntoView({ behavior: "smooth", block: "center" });
       }
     }
-
-    fetchDonors()
-  }, [])
+  }, [highlightedDonorId]);
 
   return (
     <Sidebar>
@@ -121,7 +60,15 @@ export function AppSidebar({ onAcceptPickup }: { onAcceptPickup: () => void }) {
           <ul className="space-y-3">
             {donors.map((donor) => (
               <DonorPopover key={donor.id} onAccept={onAcceptPickup}>
-                <li className="p-2 rounded-md bg-muted hover:bg-muted/80 cursor-pointer transition">
+                <li
+                  // Assign a unique id to each donor list item
+                  id={`donor-${donor.id}`}
+                  className={`p-2 rounded-md cursor-pointer transition ${
+                    highlightedDonorId === donor.id ? "bg-green-200" : "bg-muted"
+                  }`}
+                  onMouseEnter={() => onHoverDonor(donor.id)}
+                  onMouseLeave={() => onHoverDonor(null)}
+                >
                   <p className="font-semibold">{donor.name}</p>
                   <p className="text-xs text-muted-foreground">
                     {donor.address || "Loading address..."}
@@ -152,5 +99,5 @@ export function AppSidebar({ onAcceptPickup }: { onAcceptPickup: () => void }) {
       </SidebarContent>
       <SidebarFooter />
     </Sidebar>
-  )
+  );
 }
