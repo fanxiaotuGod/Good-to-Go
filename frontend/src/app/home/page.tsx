@@ -20,7 +20,6 @@ export default function Home() {
         <SidebarProvider>
           <AppSidebar />
           <main className="flex-1 overflow-hidden">
-            <SidebarTrigger />
             <Map />
           </main>
         </SidebarProvider>
