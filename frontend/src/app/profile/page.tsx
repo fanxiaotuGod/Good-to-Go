@@ -1,4 +1,6 @@
 import { NavigationMenuDemo } from "@/components/navbar";
+import { Button } from "@/components/ui/button"
+import Link from "next/link";
 
 export default function ProfilePage() {
     return (
@@ -24,7 +26,12 @@ export default function ProfilePage() {
               <blockquote className="p-4 m-4 bg-gray-100 rounded-lg text-center text-xl text-gray-700">
                 Total Distance Travelled (km): 5
               </blockquote>
-          
+            </div>
+
+            <div className="mt-4">
+              <Button asChild size = "lg">
+                <Link href="/">Logout</Link>
+              </Button>
             </div>
           </div>
       </div>
