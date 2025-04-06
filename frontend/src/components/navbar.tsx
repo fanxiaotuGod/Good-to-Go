@@ -27,7 +27,7 @@ const components: { title: string; href: string }[] = [
 
 export function NavigationMenuDemo() {
   return (
-    <NavigationMenu className="ml-4">
+    <NavigationMenu className="ml-4 h-11">
       <NavigationMenuList>
         <NavigationMenuItem>
           <NavigationMenuTrigger>User</NavigationMenuTrigger>
