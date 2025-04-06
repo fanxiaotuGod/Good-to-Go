@@ -13,13 +13,12 @@ export default function AboutPage() {
       {/* Main Content */}
       <main className="flex-1 px-6 py-8 max-w-7xl mx-auto">
         <section className="mb-6">
-          <h1 className="text-4xl font-bold mb-2">About</h1>
+          <h1 className="text-4xl font-bold mb-2">About good2go!</h1>
           <div>
             <p className="text-lg text-gray-700 mb-6">
               good2go is a community-powered platform designed to connect volunteers with 
               the <a href="https://www.foodstash.ca/" target="_blank" rel="noopener noreferrer">Food Stash</a> charity 
-              and people in need. Whether it's for disaster relief, community service, or everyday 
-              support, we help make volunteering easy and impactful.
+              and people in need.
             </p>
           </div>
         </section>
