@@ -23,7 +23,7 @@ import {
 const components: { title: string; href: string }[] = [
   {
     title: "Profile",
-    href: "",
+    href: "/profile",
   },
   {
     title: "Logout",
