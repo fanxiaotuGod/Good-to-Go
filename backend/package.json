@@ -10,6 +10,10 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+<<<<<<< HEAD
+=======
+    "axios": "^1.8.4",
+>>>>>>> 1531568 (api-addition)
     "express": "^5.1.0",
     "mysql2": "^3.14.0"
   }
