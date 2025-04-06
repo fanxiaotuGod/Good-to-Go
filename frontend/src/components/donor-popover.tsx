@@ -15,7 +15,7 @@ export default function DonorPopover({ children }: DonorPopoverProps) {
   return (
     <Popover>
       <PopoverTrigger asChild>{children}</PopoverTrigger>
-      <PopoverContent className="w-64">
+      <PopoverContent side="right" className="w-64">
         <p className="font-medium mb-2">Interested in this donation?</p>
         <p className="text-sm text-muted-foreground mb-3">
           You can proceed to coordinate a pickup or get directions from your location.
